@@ -1,6 +1,9 @@
+import cn.montaro.aria2.api.Aria2Client;
 import cn.montaro.aria2.client.websocket.Aria2WebSocketConfig;
 import cn.montaro.aria2.client.websocket.Aria2WebSocketClient;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Description:
@@ -14,9 +17,10 @@ public class ClientTest {
     public void test() {
         Aria2WebSocketConfig aria2WebSocketConfig = new Aria2WebSocketConfig();
         aria2WebSocketConfig.setSecret("123456");
-        Aria2WebSocketClient client = new Aria2WebSocketClient(aria2WebSocketConfig);
-        String gid = client.addUri(new String[]{"https://www.baidu.com"});
-        System.out.println("gid = " + gid);
-
+        Aria2Client client = new Aria2WebSocketClient(aria2WebSocketConfig);
+        List<String> methods = client.listMethods();
+        for (String method : methods) {
+            System.out.println(method);
+        }
     }
 }

@@ -183,7 +183,6 @@ public class Aria2WebSocketClient extends WebSocketClient implements Aria2Client
     public List<String> listMethods() {
         Aria2WebSocketRequest request = this.buildRequest(
                 Aria2Method.LIST_METHODS,
-                null,
                 new TypeToken<Aria2WebSocketResponse<List<String>>>() {
                 }.getType()
         );
