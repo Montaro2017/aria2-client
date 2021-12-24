@@ -1,4 +1,4 @@
-package cn.montaro.aria2.client.websocket.constants;
+package cn.montaro.aria2.constants;
 
 /**
  * Description:

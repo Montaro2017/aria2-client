@@ -1,6 +1,6 @@
 package cn.montaro.aria2.client.websocket;
 
-import cn.montaro.aria2.client.websocket.constants.WebSocketProtocol;
+import cn.montaro.aria2.constants.WebSocketProtocol;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

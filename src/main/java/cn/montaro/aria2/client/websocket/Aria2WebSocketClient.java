@@ -1,8 +1,8 @@
 package cn.montaro.aria2.client.websocket;
 
 
-import cn.montaro.aria2.api.Aria2Client;
-import cn.montaro.aria2.client.websocket.constants.Aria2Method;
+import cn.montaro.aria2.Aria2Client;
+import cn.montaro.aria2.constants.Aria2MethodName;
 import cn.montaro.aria2.client.websocket.exception.Aria2WebSocketClientConnectTimeoutException;
 import cn.montaro.aria2.client.websocket.exception.Aria2WebSocketClientException;
 import cn.montaro.aria2.client.websocket.exception.Aria2WebSocketClientTimeoutException;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2021/12/15
  */
 @Slf4j
-public class Aria2WebSocketClient extends WebSocketClient implements Aria2Client {
+public class Aria2WebSocketClient extends WebSocketClient {
 
     private Gson gson = null;
     private Aria2WebSocketConfig config = null;
@@ -147,6 +147,12 @@ public class Aria2WebSocketClient extends WebSocketClient implements Aria2Client
         return result.getResult();
     }
 
+    private <T> T getResult(Aria2WebSocketRequest request) {
+        String id = request.getId();
+        this.sendRequest(request);
+        return this.waitResult(id);
+    }
+
     /**
      * 清理id映射关系
      *
@@ -160,89 +166,8 @@ public class Aria2WebSocketClient extends WebSocketClient implements Aria2Client
 
     public String addUri(String[] uris) {
         List<String> uriList = Arrays.asList(uris);
-        return this.addUri(uriList, null, null);
-    }
-
-    @Override
-    public String addUri(List<String> uris, Map<String, String> option, Integer position) {
-        Aria2WebSocketRequest request = this.buildRequest(
-                Aria2Method.ADD_URI,
-                new TypeToken<Aria2WebSocketResponse<String>>() {
-                }.getType(),
-                uris,
-                option,
-                position
-        );
-        String id = request.getId();
-        this.sendRequest(request);
-        return this.waitResult(id);
-    }
-
-
-    @Override
-    public List<String> listMethods() {
-        Aria2WebSocketRequest request = this.buildRequest(
-                Aria2Method.LIST_METHODS,
-                new TypeToken<Aria2WebSocketResponse<List<String>>>() {
-                }.getType()
-        );
-        String id = request.getId();
-        this.sendRequest(request);
-        return this.waitResult(id);
-    }
-
-    @Override
-    public String remove(String s) {
         return null;
     }
-
-    @Override
-    public String forceRemove(String s) {
-        return null;
-    }
-
-    @Override
-    public String pause(String s) {
-        return null;
-    }
-
-    @Override
-    public String forcePause(String s) {
-        return null;
-    }
-
-    @Override
-    public String pauseAll() {
-        return null;
-    }
-
-    @Override
-    public String forcePauseAll() {
-        return null;
-    }
-
-    @Override
-    public String unpause(String s) {
-        return null;
-    }
-
-    @Override
-    public void tellStatus(String gid) {
-
-    }
-
-    // --------------WebSocket Client--------------
-
-    @Override
-    public void tellStopped(Integer offset, Integer num, String[] keys) {
-
-    }
-
-    @Override
-    public void changePosition(String gid, Integer pos, String how) {
-
-    }
-
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {

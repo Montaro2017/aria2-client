@@ -1,13 +1,10 @@
 package cn.montaro.aria2.client.websocket;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * Description:

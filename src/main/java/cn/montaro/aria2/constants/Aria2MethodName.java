@@ -1,4 +1,4 @@
-package cn.montaro.aria2.client.websocket.constants;
+package cn.montaro.aria2.constants;
 
 /**
  * Description:
@@ -7,7 +7,7 @@ package cn.montaro.aria2.client.websocket.constants;
  * @author ZhangJiaYu
  * @date 2021/12/14
  */
-public class Aria2Method {
+public class Aria2MethodName {
 
     private final static String ARIA2 = "aria2.";
     private final static String SYSTEM = "system.";
@@ -39,6 +39,7 @@ public class Aria2Method {
     public final static String GET_VERSION = ARIA2 + "getVersion";
     public final static String GET_GLOBAL_STAT = ARIA2 + "getGlobalStat";
     public final static String GET_SESSION_INFO = ARIA2 + "getSessionInfo";
+    public final static String GET_GLOBAL_OPTION = ARIA2 + "getGlobalOption";
 
     public final static String CHANGE_URI = ARIA2 + "changeUri";
     public final static String CHANGE_OPTION = ARIA2 + "changeOption";

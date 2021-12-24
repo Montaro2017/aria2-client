@@ -9,6 +9,7 @@ package cn.montaro.aria2.client.websocket.exception;
 public class Aria2WebSocketClientException extends RuntimeException {
 
     public Aria2WebSocketClientException() {
+        super();
     }
 
     public Aria2WebSocketClientException(String message) {
