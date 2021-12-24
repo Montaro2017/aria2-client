@@ -79,7 +79,7 @@ public interface Aria2Client {
     String getServers(String gid);
 
     @Aria2Method(Aria2MethodName.TELL_ACTIVE)
-    String tellActive(List<String> keys);
+    String tellActive(String... keys);
 
     @Aria2Method(Aria2MethodName.TELL_WAITING)
     String tellWaiting(int offset, int num, String... keys);
