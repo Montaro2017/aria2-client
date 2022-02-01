@@ -109,7 +109,7 @@ public class Aria2WebSocketProxy implements InvocationHandler {
         }
         JsonElement result = returnResult.get("result");
         if (resultType.equals(String.class)) {
-            return (T) result.toString();
+            return (T) result.getAsString();
         }
         return gson.fromJson(result, resultType);
     }
@@ -152,7 +152,11 @@ public class Aria2WebSocketProxy implements InvocationHandler {
         public void onMessage(String message) {
             log.debug("receive message:{}", message);
             JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
-            String id = jsonObject.get("id").getAsString();
+            JsonElement idObj = jsonObject.get("id");
+            if (idObj == null) {
+                return;
+            }
+            String id = idObj.getAsString();
             if (id == null) {
                 return;
             }
