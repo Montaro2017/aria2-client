@@ -1,20 +1,14 @@
-package cn.montaro.aria2.client.websocket;
+package cn.montaro.aria2;
 
-import cn.montaro.aria2.constants.WebSocketProtocol;
+import cn.montaro.aria2.constants.Aria2Protocol;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.net.URI;
 
-/**
- * Description:
- *
- * @author ZhangJiaYu
- * @date 2021/12/15
- */
 @Data
 @Accessors(chain = true)
-public class Aria2WebSocketConfig {
+public class Aria2Config {
 
     /**
      * 服务器地址 默认localhost
@@ -37,13 +31,17 @@ public class Aria2WebSocketConfig {
      */
     private Long timeout = 10000L;
     /**
-     * 连接协议 默认ws
-     * @see WebSocketProtocol
+     * 连接协议 默认http
+     *
+     * @see Aria2Protocol
      */
-    private String protocol = WebSocketProtocol.PROTOCOL_WS;
+    private String protocol = Aria2Protocol.Http.HTTP;
 
     public URI getURI() {
-        return URI.create(protocol + "://" + host + ":" + port + "/" + path);
+        return URI.create(url());
     }
 
+    public String url() {
+        return protocol + "://" + host + ":" + port + "/" + path;
+    }
 }

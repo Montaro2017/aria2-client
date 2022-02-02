@@ -1,5 +1,6 @@
 package cn.montaro.aria2.client.websocket;
 
+import cn.montaro.aria2.Aria2Config;
 import cn.montaro.aria2.annotation.Aria2Method;
 import cn.montaro.aria2.client.websocket.exception.Aria2WebSocketClientException;
 import com.google.gson.*;
@@ -26,10 +27,10 @@ public class Aria2WebSocketProxy implements InvocationHandler {
 
     private final Gson gson;
     private final WebSocketImpl webSocket;
-    private final Aria2WebSocketConfig config;
+    private final Aria2Config config;
 
     @SneakyThrows
-    public Aria2WebSocketProxy(Aria2WebSocketConfig config) {
+    public Aria2WebSocketProxy(Aria2Config config) {
         this.config = config;
         this.gson = new GsonBuilder().create();
         this.webSocket = new WebSocketImpl(config.getURI());
@@ -40,8 +41,9 @@ public class Aria2WebSocketProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Aria2Method aria2Method = method.getDeclaredAnnotation(Aria2Method.class);
         String methodName = aria2Method.value();
+        Type genericReturnType = method.getGenericReturnType();
         Aria2WebSocketRequest request = this.buildRequest(methodName, args);
-        Object o = this.sendRequest(request, method.getGenericReturnType());
+        Object o = this.sendRequest(request, genericReturnType);
         return o;
     }
 
@@ -153,7 +155,7 @@ public class Aria2WebSocketProxy implements InvocationHandler {
             log.debug("receive message:{}", message);
             JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
             JsonElement idObj = jsonObject.get("id");
-            if (idObj == null) {
+            if (idObj == null || idObj instanceof JsonNull) {
                 return;
             }
             String id = idObj.getAsString();
