@@ -1,7 +1,7 @@
 # aria2-client
 
 #### 介绍
-aria2 java客户端，半成品，目前支持http方式连接aria2
+aria2 java 库，能通过编写java代码的方式去控制aria2
 
 
 #### 使用说明
