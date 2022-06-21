@@ -9,10 +9,22 @@ aria2 java 库，能通过编写java代码的方式去控制aria2
 aria2 java客户端，rpc远程控制aria2客户端，支持密码
 目前仅完成http方式，欢迎PR
 
-#### 参与贡献
+#### 实例代码
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
+```java
+// Aria2配置
+Aria2Config config = new Aria2Config()
+        // 主机地址 默认localhost
+        .setHost("127.0.0.1")
+        // 端口 默认6800
+        .setPort(6800)
+        // rpc-secret
+        .setSecret("123456");
+// 实例化http客户端
+Aria2Client aria2Client = Aria2ClientFactory.httpClient(config);
+// 添加下载地址链接
+List<String> uris = new ArrayList<String>();
+uris.add(url);
+// 添加下载任务 返回任务gid
+String gid = aria2Client.addUri(uris, null, null);
+```
