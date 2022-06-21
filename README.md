@@ -9,7 +9,7 @@ aria2 java 库，能通过编写java代码的方式去控制aria2
 aria2 java客户端，rpc远程控制aria2客户端，支持密码
 目前仅完成http方式，欢迎PR
 
-#### 实例代码
+#### 示例代码
 
 ```java
 // Aria2配置
