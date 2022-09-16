@@ -2,6 +2,7 @@ package cn.montaro.aria2;
 
 import cn.montaro.aria2.annotation.Aria2Method;
 import cn.montaro.aria2.constants.Aria2MethodName;
+import cn.montaro.aria2.resp.Aria2Status;
 
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public interface Aria2Client {
 
     // TODO: define return type
     @Aria2Method(Aria2MethodName.TELL_STATUS)
-    String tellStatus(String gid, String... keys);
+    Aria2Status tellStatus(String gid, String... keys);
 
     @Aria2Method(Aria2MethodName.GET_URIS)
     String getUris(String gid);

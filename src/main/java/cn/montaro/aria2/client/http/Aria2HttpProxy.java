@@ -80,9 +80,12 @@ public class Aria2HttpProxy implements InvocationHandler {
 
     private Object deserialize(String json, Type resultType) {
         JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-        String result = jsonObject.get("result").getAsString();
+        JsonElement result = jsonObject.get("result");
+        if (result instanceof JsonObject && resultType.equals(String.class)) {
+            return result.toString();
+        }
         if (resultType.equals(String.class)) {
-            return result;
+            return result.getAsString();
         }
         return gson.fromJson(result, resultType);
     }
