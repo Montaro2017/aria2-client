@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Aria2HttpProxy implements InvocationHandler {
 
     private final Gson gson;
-    private Aria2Config config;
+    private final Aria2Config config;
 
     public Aria2HttpProxy(Aria2Config config) {
         this.config = config;
@@ -80,10 +80,9 @@ public class Aria2HttpProxy implements InvocationHandler {
 
     private Object deserialize(String json, Type resultType) {
         JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-        JsonObject result = jsonObject.get("result").getAsJsonObject();
-
+        String result = jsonObject.get("result").getAsString();
         if (resultType.equals(String.class)) {
-            return result.toString();
+            return result;
         }
         return gson.fromJson(result, resultType);
     }
