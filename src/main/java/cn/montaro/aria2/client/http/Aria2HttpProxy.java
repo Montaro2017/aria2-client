@@ -1,92 +1,108 @@
 package cn.montaro.aria2.client.http;
 
-import cn.hutool.http.HttpUtil;
 import cn.montaro.aria2.Aria2Config;
+import cn.montaro.aria2.ProxyHandler;
 import cn.montaro.aria2.annotation.Aria2Method;
+import cn.montaro.aria2.model.Aria2Request;
+import cn.montaro.aria2.model.Aria2Response;
 import com.google.gson.*;
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.*;
 
-import java.lang.reflect.InvocationHandler;
+import java.io.IOException;
+import java.lang.invoke.WrongMethodTypeException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.ListIterator;
-import java.util.UUID;
+import java.util.*;
 
-public class Aria2HttpProxy implements InvocationHandler {
+@Slf4j
+public class Aria2HttpProxy extends ProxyHandler {
+
+    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private static final String TOKEN_PREFIX = "token:";
 
     private final Gson gson;
     private final Aria2Config config;
+    private final OkHttpClient okHttpClient;
 
-    public Aria2HttpProxy(Aria2Config config) {
+    public Aria2HttpProxy(Gson gson, Aria2Config config, Class<?> interfaceClass) {
+        this(gson, config, new OkHttpClient(), interfaceClass);
+    }
+
+    public Aria2HttpProxy(Gson gson, Aria2Config config, OkHttpClient okHttpClient, Class<?> interfaceClass) {
+        super(interfaceClass);
+        this.gson = gson;
         this.config = config;
-        this.gson = new GsonBuilder().create();
+        this.okHttpClient = okHttpClient;
     }
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Aria2Method aria2Method = method.getDeclaredAnnotation(Aria2Method.class);
-        String methodName = aria2Method.value();
-        Type resultType = method.getGenericReturnType();
-        String body = this.serialize(methodName, args);
-        String json = this.request(body);
-        Object result = this.deserialize(json, resultType);
-        return result;
+    public Object invoke0(Object proxy, Method method, Object[] args) throws Throwable {
+        String methodName = getAria2MethodName(method);
+        Request request = buildRequest(methodName, args);
+        String json = sendRequest(request);
+        return toReturnType(json, method.getGenericReturnType());
     }
 
-    private String serialize(String methodName, Object[] args) {
-        Aria2HttpRequest request = new Aria2HttpRequest();
+    private String getAria2MethodName(Method method) {
+        Aria2Method aria2Method = method.getAnnotation(Aria2Method.class);
+        if (aria2Method == null) {
+            throw new WrongMethodTypeException();
+        }
+        return aria2Method.value();
+    }
+
+    private Request buildRequest(String methodName, Object[] args) {
+        String url = config.url();
+        String body = buildRequestBody(methodName, args);
+        log.debug(" Request  ==> {}", body);
+        return new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(body, JSON))
+                .build();
+    }
+
+    private String sendRequest(Request request) throws IOException {
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            String responseBody = response.body().string();
+            log.debug(" Response <== {}", responseBody);
+            return responseBody;
+        }
+    }
+
+    private String buildRequestBody(String methodName, Object[] args) {
+        Aria2Request request = new Aria2Request();
         request.setId(UUID.randomUUID().toString());
         request.setMethod(methodName);
-        request.setParams(serializeArguments(args));
+        request.setParams(buildRequestParams(args));
         return gson.toJson(request);
     }
 
-    /**
-     * 序列化参数
-     *
-     * @param args
-     * @return
-     */
-    private JsonElement serializeArguments(Object[] args) {
-        ArrayList<Object> arguments = new ArrayList<>();
-        if (args != null && args.length != 0) {
-            arguments = new ArrayList<>(Arrays.asList(args));
+    private JsonElement buildRequestParams(Object[] args) {
+        List<Object> params = new ArrayList<>(Arrays.asList(args));
+        // 添加token
+        if (config.getSecret() != null && !config.getSecret().isEmpty()) {
+            params.add(0, TOKEN_PREFIX + config.getSecret());
         }
-        String secret = "token:";
-        if (config.getSecret() != null) {
-            secret += config.getSecret();
-        }
-        arguments.add(0, secret);
-        int size = arguments.size();
-        ListIterator<Object> listIterator = arguments.listIterator(size);
-        while (listIterator.hasPrevious()) {
-            Object previous = listIterator.previous();
-            if (previous == null) {
-                listIterator.remove();
+        // 删除params末尾连续的null值
+        ListIterator<Object> it = params.listIterator(params.size());
+        while (it.hasPrevious()) {
+            if (it.previous() == null) {
+                it.remove();
             } else {
                 break;
             }
         }
-        return gson.toJsonTree(arguments);
+        return gson.toJsonTree(params);
     }
 
-
-    private String request(String body) {
-        String url = config.url();
-        String json = HttpUtil.post(url, body);
-        return json;
-    }
-
-    private Object deserialize(String json, Type resultType) {
-        JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
-        JsonElement result = jsonObject.get("result");
-        if (result instanceof JsonObject && resultType.equals(String.class)) {
-            return result.toString();
-        }
-        if (resultType.equals(String.class)) {
+    private Object toReturnType(String json, Type returnType) {
+        Aria2Response response = gson.fromJson(json, Aria2Response.class);
+        JsonElement result = response.getResult();
+        if (returnType.equals(String.class)) {
             return result.getAsString();
         }
-        return gson.fromJson(result, resultType);
+        String resultJson = result.toString();
+        return gson.fromJson(resultJson, returnType);
     }
 }

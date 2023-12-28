@@ -1,0 +1,21 @@
+Configuration:
+  status: INFO
+  monitorInterval: 30
+  Properties:
+    Property:
+      - name: console.pattern
+        value: "%d %highlight{%-5level} [%magenta{%-10t}] %cyan{%-30.30C{1.}} %blue{[%3L]} %m%n"
+  Appenders:
+    Console:
+      name: ConsoleAppender
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "${console.pattern}"
+  Loggers:
+    Root:
+      level: INFO
+      AppenderRef:
+        - ref: ConsoleAppender
+    Logger:
+      - name: cn.montaro.aria2
+        level: DEBUG

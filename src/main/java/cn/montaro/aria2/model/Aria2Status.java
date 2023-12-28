@@ -1,6 +1,5 @@
-package cn.montaro.aria2.resp;
+package cn.montaro.aria2.model;
 
-import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
 import java.util.List;

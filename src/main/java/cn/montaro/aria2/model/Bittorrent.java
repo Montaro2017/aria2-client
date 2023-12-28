@@ -1,4 +1,4 @@
-package cn.montaro.aria2.resp;
+package cn.montaro.aria2.model;
 
 import lombok.Data;
 
