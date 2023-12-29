@@ -1,8 +1,7 @@
 package cn.montaro.aria2;
 
-import cn.montaro.aria2.client.http.Aria2HttpProxy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import cn.montaro.aria2.client.http.Aria2ClientHttpProxy;
+import cn.montaro.aria2.gson.Aria2Gson;
 
 import java.lang.reflect.Proxy;
 
@@ -14,8 +13,6 @@ import java.lang.reflect.Proxy;
  */
 public class Aria2ClientFactory {
 
-    private static final Gson GSON = new GsonBuilder().create();
-
     private Aria2ClientFactory() {
     }
 
@@ -23,15 +20,9 @@ public class Aria2ClientFactory {
         return Thread.currentThread().getContextClassLoader();
     }
 
-//    public static Aria2Client webSocketClient(Aria2Config config) {
-//        ClassLoader classLoader = getClassLoader();
-//        Aria2WebSocketProxy proxy = new Aria2WebSocketProxy(config);
-//        return (Aria2Client) Proxy.newProxyInstance(classLoader, new Class[]{Aria2Client.class}, proxy);
-//    }
-
     public static Aria2Client httpClient(Aria2Config config) {
         ClassLoader classLoader = getClassLoader();
-        Aria2HttpProxy proxy = new Aria2HttpProxy(GSON, config, Aria2Client.class);
+        Aria2ClientHttpProxy proxy = new Aria2ClientHttpProxy(Aria2Gson.GSON, config, Aria2Client.class);
         return (Aria2Client) Proxy.newProxyInstance(classLoader, new Class[]{Aria2Client.class}, proxy);
     }
 }

@@ -30,8 +30,14 @@ public abstract class ProxyHandler implements InvocationHandler {
         });
         INVOCATION_MAP.put("wait", (self, args) -> {
             if (args == null) self.wait();
-            else if (args.length == 1) self.wait(Long.parseLong(String.valueOf(args[0])));
-            else self.wait(Long.parseLong(String.valueOf(args[0])), Integer.parseInt(String.valueOf(args[1])));
+            else if (args.length == 1) {
+                long timeout = Long.parseLong(String.valueOf(args[0]));
+                self.wait(timeout);
+            } else {
+                long timeout = Long.parseLong(String.valueOf(args[0]));
+                int nanos = Integer.parseInt(String.valueOf(args[1]));
+                self.wait(timeout, nanos);
+            }
             return null;
         });
     }

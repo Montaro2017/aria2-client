@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum FTPType {
+public enum FTPType implements EnumValue<String> {
 
     BINARY("binary"),
     ASCII("ascii");

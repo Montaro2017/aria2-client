@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum UriSelector {
+public enum UriSelector implements EnumValue<String> {
     INORDER("inorder"),
     FEEDBACK("feedback"),
     ADAPTIVE("adaptive");

@@ -1,5 +1,6 @@
 package cn.montaro.aria2.model;
 
+import cn.montaro.aria2.enums.Status;
 import lombok.Data;
 
 import java.util.List;
@@ -12,25 +13,28 @@ import java.util.List;
  */
 @Data
 public class Aria2Status {
-    private String bitfield;
-    private Bittorrent bittorrent;
+    private String gid;
+    private Status status;
+    private Long totalLength;
     private Long completedLength;
-    private Integer connections;
-    private String dir;
+    private Long uploadLength;
+    private String bitfield;
     private Long downloadSpeed;
+    private Long uploadSpeed;
+    private String infoHash;
+    private Integer numSeeders;
+    private Boolean seeder;
+    private Long pieceLength;
+    private Integer numPieces;
+    private Integer connections;
     private Integer errorCode;
     private String errorMessage;
-    private List<Aria2File> files;
-    private String following;
     private List<String> followedBy;
-    private String gid;
-    private String infoHash;
-    private Integer numPieces;
-    private Integer numSeeders;
-    private Long pieceLength;
-    private Boolean seeder;
-    private String status;
-    private Long totalLength;
-    private Long uploadLength;
-    private Long uploadSpeed;
+    private String following;
+    private String belongsTo;
+    private String dir;
+    private List<Aria2File> files;
+    private Bittorrent bittorrent;
+    private Long verifiedLength;
+    private Long verifyIntegrityPending;
 }

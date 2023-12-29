@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ProxyMethod {
+public enum ProxyMethod implements EnumValue<String> {
 
     GET("get"),
     TUNNEL("tunnel");

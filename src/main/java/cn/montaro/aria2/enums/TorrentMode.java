@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Follow implements EnumValue<String> {
+public enum TorrentMode implements EnumValue<String> {
 
-    TRUE("true"),
-    FALSE("false"),
-    MEM("mem");
+    SINGLE("single"),
+    MULTI("multi");
     private final String value;
 }

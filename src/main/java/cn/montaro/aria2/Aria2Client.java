@@ -2,8 +2,7 @@ package cn.montaro.aria2;
 
 import cn.montaro.aria2.annotation.Aria2Method;
 import cn.montaro.aria2.constants.Methods;
-import cn.montaro.aria2.model.InputFile;
-import cn.montaro.aria2.model.Aria2Status;
+import cn.montaro.aria2.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -68,31 +67,31 @@ public interface Aria2Client {
     Aria2Status tellStatus(String gid, String... keys);
 
     @Aria2Method(Methods.GET_URIS)
-    String getUris(String gid);
+    List<Aria2Uri> getUris(String gid);
 
     @Aria2Method(Methods.GET_FILES)
-    String getFiles(String gid);
+    List<Aria2File> getFiles(String gid);
 
     @Aria2Method(Methods.GET_PEERS)
-    String getPeers(String gid);
+    List<Peer> getPeers(String gid);
 
     @Aria2Method(Methods.GET_SERVERS)
-    String getServers(String gid);
+    List<Server> getServers(String gid);
 
     @Aria2Method(Methods.TELL_ACTIVE)
-    String tellActive(String... keys);
+    List<Aria2Status> tellActive(String... keys);
 
     @Aria2Method(Methods.TELL_WAITING)
-    String tellWaiting(int offset, int num, String... keys);
+    List<Aria2Status> tellWaiting(Integer offset, Integer num, String... keys);
 
     @Aria2Method(Methods.TELL_STOPPED)
-    String tellStopped(int offset, int num, String... keys);
+    List<Aria2Status> tellStopped(Integer offset, Integer num, String... keys);
 
     @Aria2Method(Methods.CHANGE_POSITION)
     Integer changePosition(String gid, Integer pos, String how);
 
     @Aria2Method(Methods.CHANGE_URI)
-    String changeUri(String gid, int fileIndex, List<String> delUris, List<String> addUris);
+    List<Boolean> changeUri(String gid, int fileIndex, List<String> delUris, List<String> addUris, Integer position);
 
     @Aria2Method(Methods.GET_OPTION)
     Map<String, String> getOption(String gid);
@@ -101,37 +100,37 @@ public interface Aria2Client {
     String changeOption(String gid, InputFile option);
 
     @Aria2Method(Methods.GET_GLOBAL_OPTION)
-    Map<String, String> getGlobalOption();
+    InputFile getGlobalOption();
 
     @Aria2Method(Methods.CHANGE_GLOBAL_OPTION)
-    String changeGlobalOption(InputFile option);
+    Boolean changeGlobalOption(InputFile option);
 
     @Aria2Method(Methods.GET_GLOBAL_STAT)
-    String getGlobalStat();
+    GlobalStat getGlobalStat();
 
     @Aria2Method(Methods.PURGE_DOWNLOAD_RESULT)
-    String purgeDownloadResult();
+    Boolean purgeDownloadResult();
 
     @Aria2Method(Methods.REMOVE_DOWNLOAD_RESULT)
-    String removeDownloadResult(String gid);
+    Boolean removeDownloadResult(String gid);
 
     @Aria2Method(Methods.GET_VERSION)
-    String getVersion();
+    Aria2Version getVersion();
 
     @Aria2Method(Methods.GET_SESSION_INFO)
-    String getSessionInfo();
+    SessionInfo getSessionInfo();
 
     @Aria2Method(Methods.SHUTDOWN)
-    String shutdown();
+    Boolean shutdown();
 
     @Aria2Method(Methods.FORCE_SHUTDOWN)
-    String forceShutdown();
+    Boolean forceShutdown();
 
     @Aria2Method(Methods.SAVE_SESSION)
-    String saveSession();
+    Boolean saveSession();
 
     @Aria2Method(Methods.MULTI_CALL)
-    String multicall(List<Map<String, List<Object>>> methods);
+    List<String> multicall(List<Map<String, List<Object>>> methods);
 
     /**
      * 查询支持的方法列表
@@ -143,6 +142,5 @@ public interface Aria2Client {
 
     @Aria2Method(Methods.LIST_NOTIFICATIONS)
     List<String> listNotifications();
-
 
 }

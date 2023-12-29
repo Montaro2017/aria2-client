@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum StreamPieceSelector {
+public enum StreamPieceSelector implements EnumValue<String> {
     DEFAULT("default"),
     INORDER("inorder"),
     RANDOM("random"),

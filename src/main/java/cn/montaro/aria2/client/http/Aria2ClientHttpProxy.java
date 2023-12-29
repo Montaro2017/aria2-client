@@ -3,6 +3,7 @@ package cn.montaro.aria2.client.http;
 import cn.montaro.aria2.Aria2Config;
 import cn.montaro.aria2.ProxyHandler;
 import cn.montaro.aria2.annotation.Aria2Method;
+import cn.montaro.aria2.exception.Aria2Exception;
 import cn.montaro.aria2.model.Aria2Request;
 import cn.montaro.aria2.model.Aria2Response;
 import com.google.gson.*;
@@ -11,12 +12,13 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.lang.invoke.WrongMethodTypeException;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.*;
 
 @Slf4j
-public class Aria2HttpProxy extends ProxyHandler {
+public class Aria2ClientHttpProxy extends ProxyHandler {
 
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private static final String TOKEN_PREFIX = "token:";
@@ -25,11 +27,11 @@ public class Aria2HttpProxy extends ProxyHandler {
     private final Aria2Config config;
     private final OkHttpClient okHttpClient;
 
-    public Aria2HttpProxy(Gson gson, Aria2Config config, Class<?> interfaceClass) {
+    public Aria2ClientHttpProxy(Gson gson, Aria2Config config, Class<?> interfaceClass) {
         this(gson, config, new OkHttpClient(), interfaceClass);
     }
 
-    public Aria2HttpProxy(Gson gson, Aria2Config config, OkHttpClient okHttpClient, Class<?> interfaceClass) {
+    public Aria2ClientHttpProxy(Gson gson, Aria2Config config, OkHttpClient okHttpClient, Class<?> interfaceClass) {
         super(interfaceClass);
         this.gson = gson;
         this.config = config;
@@ -79,7 +81,10 @@ public class Aria2HttpProxy extends ProxyHandler {
     }
 
     private JsonElement buildRequestParams(Object[] args) {
-        List<Object> params = new ArrayList<>(Arrays.asList(args));
+        List<Object> params = new ArrayList<>();
+        if (args != null) {
+            params.addAll(Arrays.asList(args));
+        }
         // 添加token
         if (config.getSecret() != null && !config.getSecret().isEmpty()) {
             params.add(0, TOKEN_PREFIX + config.getSecret());
@@ -87,7 +92,15 @@ public class Aria2HttpProxy extends ProxyHandler {
         // 删除params末尾连续的null值
         ListIterator<Object> it = params.listIterator(params.size());
         while (it.hasPrevious()) {
-            if (it.previous() == null) {
+            Object previous = it.previous();
+            boolean nullValue = previous == null;
+            if (previous instanceof Object[]) {
+                Object[] arr = (Object[]) previous;
+                if (arr.length == 0) {
+                    nullValue = true;
+                }
+            }
+            if (nullValue) {
                 it.remove();
             } else {
                 break;
@@ -98,9 +111,17 @@ public class Aria2HttpProxy extends ProxyHandler {
 
     private Object toReturnType(String json, Type returnType) {
         Aria2Response response = gson.fromJson(json, Aria2Response.class);
+        Aria2Response.Error error = response.getError();
+        if (error != null) {
+            throw new Aria2Exception("code = " + error.getCode() + ", message = " + error.getMessage());
+        }
         JsonElement result = response.getResult();
         if (returnType.equals(String.class)) {
             return result.getAsString();
+        }
+        if (returnType.equals(Boolean.class)) {
+            String boolResult = result.getAsString();
+            return "OK".equals(boolResult);
         }
         String resultJson = result.toString();
         return gson.fromJson(resultJson, returnType);

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum CryptoLevel {
+public enum CryptoLevel implements EnumValue<String> {
 
     @SerializedName(value = "plain")
     PLAIN("plain"),

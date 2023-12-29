@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum FileAllocation {
+public enum FileAllocation implements EnumValue<String> {
     @SerializedName(value = "none")
     NONE("none"),
     @SerializedName(value = "prealloc")

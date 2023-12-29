@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum PreferredProtocol {
+public enum PreferredProtocol implements EnumValue<String> {
 
     NONE("none"),
     HTTP("http"),

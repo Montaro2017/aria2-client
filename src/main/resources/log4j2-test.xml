@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="30">
+    <Properties>
+        <Property name="console.pattern">%d %highlight{%-5level} [%magenta{%-10t}] %cyan{%-30.30C{1.}} %blue{[%3L]} %m%n</Property>
+    </Properties>
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${console.pattern}" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleAppender" />
+        </Root>
+        <Logger name="cn.montaro.aria2" level="DEBUG" />
+    </Loggers>
+</Configuration>
